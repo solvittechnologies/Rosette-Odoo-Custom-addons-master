@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_hr_confirmation_evaluation_form" model="ir.ui.view">
+            <field name="name">view.hr.confirmation.evaluation.form</field>
+            <field name="model">hr.confirmation.evaluation</field>
+            <field name="arch" type="xml">
+                <form string="Confirmation Evaluation Form">
+                    <sheet>
+                        <header>
+                            <button name="send_approval" string="Send For Approval" attrs="{'invisible':[('state','!=', 'draft')]}" class="oe_highlight" type="object"/>
+                            <button name="approve" string="Approve" attrs="{'invisible':[('state','!=', 'send_for_approval')]}" class="oe_highlight" type="object"/>
+                            <button name="reject" string="Reject" attrs="{'invisible':[('state','!=', 'send_for_approval')]}" class="oe_highlight" type="object"/>
+                            <field name="state" widget="statusbar"/>
+                        </header>
+                        <group>
+                            <group>
+                                <field name="employee"/>
+                                <field name="superior_name"/>
+                                <field name="date_of_joining"/>
+                                <field name="employee_current_scop_work"/>
+                                <field name="rejection_note" readonly="1" attrs="{'invisible':[('state','!=', 'reject')]}"/>
+                            </group>
+                            <group>
+                                <field name="salary"/>
+                                <field name="company_name" style="margin-bottom:30px;"/>
+                                <field name="present_position" style="margin-bottom:30px;"/>
+                                <field name="company_id"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="BY IMMEDIATE SUPERIOR">
+                                <field name="superior_line_ids">
+                                    <tree string="Test" editable="bottom">
+                                        <field name="assessment_criteria_id"/>
+                                        <field name="is_excellent"/>
+                                        <field name="excellent"/>
+                                        <field name="is_very_good"/>
+                                        <field name="very_good"/>
+                                        <field name="is_good"/>
+                                        <field name="good"/>
+                                        <field name="is_poor"/>
+                                        <field name="poor"/>
+                                        <field name="is_very_poor"/>
+                                        <field name="very_poor"/>
+                                    </tree>
+                                </field>
+                                <label for="recommended_confirmation_terminated"/>
+                                <field name="recommended_confirmation_terminated"/>
+                                <div style="margin-bottom:30px;"/>
+
+                                <label for="technical_training_manager"/>
+                                <field name="technical_training_manager"/>
+                                <div style="margin-bottom:30px;"/>
+
+                                <label for="behavioral_training_required"/>
+                                <field name="behavioral_training_required"/>
+                                <div style="margin-bottom:30px;"/>
+
+                                <group>
+                                    <field name="confirmation_done_by_id" style="margin-bottom:50px;"/>
+                                    <field name="job_position_id" style="margin-bottom:30px;"/>
+                                    <field name="date"/>
+                                </group>
+                            </page>
+                            <page string="BY HR DEPARTMENT">
+                                <field name="hr_line_ids">
+                                    <tree string="Hr Line" editable="bottom">
+                                        <field name="leave_authorized_by_company_policy"/>
+                                        <field name="other_leave_taken_on_request"/>
+                                        <field name="leave_taken_without_request"/>
+                                        <field name="no_of_query_received_during_period"/>
+                                        <field name="no_of_warning_received_during_period"/>
+                                        <field name="no_of_suspensions_received_during_period"/>
+                                        <field name="any_letters_of_commendation_from_superior"/>
+                                    </tree>
+                                </field>
+                                <label for="any_misconduct_noticed_by_the_location_hr_department"/>
+                                <field name="any_misconduct_noticed_by_the_location_hr_department"/>
+                                <div style="margin-bottom:30px;"/>
+
+                                <group>
+                                    <field name="hod_id" style="margin-bottom:30px;"/>
+                                    <field name="designation" style="margin-bottom:30px;"/>
+                                    <field name="date" style="margin-bottom:30px;"/>
+                                    <field name="approved_by_id" style="margin-bottom:30px;"/>
+                                </group>
+
+                                <group col="3">
+                                    <group>
+                                        <field name="supervisor_id"/>
+                                    </group>
+                                    <group>
+                                        <field name="hr_executive_id"/>
+                                    </group>
+                                    <group>
+                                        <field name="executive_director_id"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_hr_confirmation_evaluation_tree" model="ir.ui.view">
+            <field name="name">view.hr.confirmation.evaluation.tree</field>
+            <field name="model">hr.confirmation.evaluation</field>
+            <field name="arch" type="xml">
+                <tree string="Confirmation Evaluation Tree">
+                    <field name="employee"/>
+                    <field name="superior_name"/>
+                    <field name="date_of_joining"/>
+                    <field name="company_name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="hr_confirmation_evaluation_act_window" model="ir.actions.act_window">
+            <field name="name">Confirmation Evaluation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hr.confirmation.evaluation</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Confirmation Evaluation"
+                  id="confirmation_menu_root"
+                  parent="hr_menus.hr_menus"
+                  sequence="50"/>
+
+        <menuitem name="Confirmation Evaluation"
+                  id="confirmation_menu"
+                  parent="confirmation_menu_root"
+                  action="hr_confirmation_evaluation_act_window"
+                  sequence="10"
+        />
+
+    </data>
+</odoo>

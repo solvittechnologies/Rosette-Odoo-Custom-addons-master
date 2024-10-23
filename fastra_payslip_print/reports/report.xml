@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="paperformat_hr_payslip_custom_report" model="report.paperformat">
+        <field name="name">hr payslip custom report</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="page_width">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">20</field>
+        <field name="margin_bottom">28</field>
+        <field name="margin_right">7</field>
+        <field name="margin_left">7</field>
+        <field name="header_line" eval="True"/>
+        <field name="header_spacing">20</field>
+        <field name="dpi">90</field>
+    </record>
+
+
+    <report id="hr_payslip_custom_report"
+            model="hr.payslip.custom.line"
+            string="Employee Payslip"
+            report_type="qweb-pdf"
+            name="fastra_payslip_print.hr_payslip_custom_report_view"
+            paperformat="fastra_payslip_print.paperformat_hr_payslip_custom_report"
+            menu="False"
+            print_report_name="'payslip report - %s' % object.employe_id.name"/>
+
+
+    <template id="hr_payslip_custom_report_view">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout_boxed">
+
+                <main>
+                    <t t-set="o" t-value="o.with_context(lang=lang)"/>
+                    <div class="page">
+                        <div style="padding-top:40px">
+                            <h2>Pay Slip</h2>
+                            <p>Salary Slip of
+                                <span>
+                                    <t t-esc="docs.employe_name.name"/>
+                                </span>
+                            </p>
+                            <p>
+                                <t t-esc="company.name"/>
+                            </p>
+                        </div>
+                        <table class="table table-sm o_main_table">
+                            <tr>
+                                <th>Name</th>
+                                <td>
+                                    <t t-esc="docs.employe_name.name"/>
+                                </td>
+                                <th>Staff Id</th>
+                                <td>
+                                    <t t-esc="docs.staff_id"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Address</th>
+                                <td>
+                                    <t t-esc="docs.employe_name.work_location  "/>
+                                </td>
+                                <th>Month</th>
+                                <td>
+                                    <t t-esc="docs.payslip_custom_id.month"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td>
+                                    <t t-esc="docs.employe_name.work_email"/>
+                                </td>
+                                <th>Function</th>
+                                <td>
+                                    <t t-esc="docs.function.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Place of designation</th>
+                                <td>
+                                    <t t-esc="docs.designation_place"/>
+                                </td>
+                                <th>Mode Of Payment</th>
+                                <td>
+                                    <t t-esc="docs.payment_mode"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Period</th>
+                                <td>
+                                    <t t-esc="docs.payslip_custom_id.date_from"/>
+                                    <span>-</span>
+                                    <t t-esc="docs.payslip_custom_id.date_to"/>
+                                </td>
+                                <th>Position</th>
+                                <td>
+                                    <t t-esc="docs.position.name"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <h2>Details by Salary Rule Category</h2>
+
+                        <table class="table table-sm o_main_table">
+                            <tr>
+                                <th>Code</th>
+                                <th>SALARY RULE CATEGORY</th>
+                                <th>TOTAL</th>
+                            </tr>
+                            <t t-if="getwizardValue.payment_mode">
+                                <tr>
+                                    <td>MOP</td>
+                                    <td>Mode Of Payment</td>
+                                    <td>
+                                        <t t-esc="docs.payment_mode"/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.employe_name">
+
+                                <tr>
+                                    <td>NOE</td>
+                                    <td>Names of Employees</td>
+                                    <td>
+                                        <t t-esc="docs.employe_name.name"/>
+                                    </td>
+                                </tr>
+
+                            </t>
+
+                            <t t-if="getwizardValue.position">
+                                <tr>
+                                    <td>POTS</td>
+                                    <td>Position</td>
+                                    <td>
+                                        <t t-esc="docs.position"/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.basic_salary">
+                                <tr>
+                                    <td>BAS</td>
+                                    <td>Basic Salary</td>
+                                    <td>
+                                        <t t-esc="docs.basic_salary"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.transport_allowance">
+                                <tr>
+                                    <td>TAW</td>
+                                    <td>Transport Allowance</td>
+                                    <td>
+                                        <t t-esc="docs.transport_allowance"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.utilities_allowance">
+                                <tr>
+                                    <td>UTAW</td>
+                                    <td>Utilities Allowance</td>
+                                    <td>
+                                        <t t-esc="docs.utilities_allowance"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.house_Rent_Allowance">
+                                <tr>
+                                    <td>HRA</td>
+                                    <td>House Rent Allowance</td>
+                                    <td>
+                                        <t t-esc="docs.house_Rent_Allowance"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.overtime_odp">
+                                <tr>
+                                    <td>OVODP</td>
+                                    <td>OVERTIME/ODP</td>
+                                    <td>
+                                        <t t-esc="docs.overtime_odp"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.employee_benefit_gratuity_loan">
+                                <tr>
+                                    <td>BGL</td>
+                                    <td>Benefit/Gratuity/Loan</td>
+                                    <td>
+                                        <t t-esc="docs.employee_benefit_gratuity_loan"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.monthly_gross_pay">
+                                <tr>
+                                    <td>MGP</td>
+                                    <td>Monthly Gross Pay</td>
+                                    <td>
+                                        <t t-esc="docs.monthly_gross_pay"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.total_monthly_gross_pay">
+                                <tr>
+                                    <td>TMGP</td>
+                                    <td>Total Monthly Gross Pay</td>
+                                    <td>
+                                        <t t-esc="docs.total_monthly_gross_pay"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.paye">
+                                <tr>
+                                    <td>PAYE</td>
+                                    <td>PAYE</td>
+                                    <td>
+                                        <t t-esc="docs.paye"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.advance_salary">
+                                <tr>
+                                    <td>ADS</td>
+                                    <td>ADVANCE SALARY</td>
+                                    <td>
+                                        <t t-esc="docs.advance_salary"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.nhf">
+                                <tr>
+                                    <td>NHF</td>
+                                    <td>NHF</td>
+                                    <td>
+                                        <t t-esc="docs.nhf"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.pension">
+                                <tr>
+                                    <td>PESN</td>
+                                    <td>PENSION</td>
+                                    <td>
+                                        <t t-esc="docs.pension"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.loan_repayment">
+                                <tr>
+                                    <td>LOR</td>
+                                    <td>LOAN REPAYMENT</td>
+                                    <td>
+                                        <t t-esc="docs.loan_repayment"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.absent_odp_penalty">
+                                <tr>
+                                    <td>AOP</td>
+                                    <td>ABSENT/ODP/PENALTY</td>
+                                    <td>
+                                        <t t-esc="docs.absent_odp_penalty"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.total_deductions">
+                                <tr>
+                                    <td>TTD</td>
+                                    <td>TOTAL DEDUCTIONS</td>
+                                    <td>
+                                        <t t-esc="docs.total_deductions"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.net_pay">
+                                <tr>
+                                    <td>NETP</td>
+                                    <td>NET PAY</td>
+                                    <td>
+                                        <t t-esc="docs.net_pay"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.hourly_pay">
+                                <tr>
+                                    <td>HPA</td>
+                                    <td>Hourly Pay</td>
+                                    <td>
+                                        <t t-esc="docs.hourly_pay"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.overtime">
+                                <tr>
+                                    <td>OVT</td>
+                                    <td>Overtime</td>
+                                    <td>
+                                        <t t-esc="docs.overtime"/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.days_worked">
+                                <tr>
+                                    <td>DAW</td>
+                                    <td>Days Worked</td>
+                                    <td>
+                                        <t t-esc="docs.days_worked"/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.daily_pay">
+                                <tr>
+                                    <td>DAP</td>
+                                    <td>Daily Pay</td>
+                                    <td>
+                                        <t t-esc="docs.daily_pay"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.off_duty_working">
+                                <tr>
+                                    <td>ODW</td>
+                                    <td>Off Duty Working</td>
+                                    <td>
+                                        <t t-esc="docs.off_duty_working"/>
+                                    </td>
+                                </tr>
+                            </t>
+
+
+                            <t t-if="getwizardValue.hourly_worked">
+                                <tr>
+                                    <td>HWK</td>
+                                    <td>Hourly Worked</td>
+                                    <td>
+                                        <t t-esc="docs.hourly_worked"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.amount">
+                                <tr>
+                                    <td>OVA</td>
+                                    <td>Overtime Amount</td>
+                                    <td>
+                                        <t t-esc="docs.amount"
+                                           t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.function">
+                                <tr>
+                                    <td>FCTN</td>
+                                    <td>Function</td>
+                                    <td>
+                                        <t t-esc="docs.function.name"/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="getwizardValue.employe_name">
+                                <tr>
+                                    <td>EMY</td>
+                                    <td>Employee</td>
+                                    <td>
+                                        <t t-esc="docs.employe_name.name"/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                        </table>
+                    </div>
+                </main>
+
+
+                <!-- <t t-set="address">
+                    <address t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
+                    <div t-if="o.partner_id.vat" class="mt16">
+                        <t t-if="o.company_id.account_fiscal_country_id.vat_label" t-esc="o.company_id.account_fiscal_country_id.vat_label" id="inv_tax_id_label"/>
+                        <t t-else="">Tax ID</t>: <span t-field="o.partner_id.vat"/></div>
+                </t> -->
+
+                <!-- <div class="page">
+                <div class="header">
+                    <h3 class="text-center">Sales Summary Report
+                        <span style="font-size: 14px;"><strong>From</strong></span>
+                    </h3>
+                    <h3 class="text-center">Sales Summary Report
+                        <span style="font-size: 14px;"><strong>From</strong></span>
+                    </h3>
+                </div>
+            </div> -->
+
+
+                <!-- <div class="footer o_standard_footer" style="border-top: 1px solid black;">
+                <div class="row text-center">
+                    <div class="col col-12 text-center">
+                        <ul class="list-inline">
+                            <li class="list-inline-item">Page:</li>
+                            <li class="list-inline-item">
+                                <span class="page" />
+                            </li>
+                            <li class="list-inline-item">/</li>
+                            <li class="list-inline-item">
+                                <span class="topage" />
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div> -->
+            </t>
+
+        </t>
+
+    </template>
+
+
+</odoo>
